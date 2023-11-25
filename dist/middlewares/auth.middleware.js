@@ -18,14 +18,15 @@ const user_model_1 = require("../models/user.model");
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 exports.protect = (0, express_async_handler_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     let token;
-    let decoded = '';
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    let decoded = "";
+    if (req.headers.authorization &&
+        req.headers.authorization.startsWith("Bearer")) {
         try {
             token = req.headers.authorization.split(" ")[1];
             if (process.env.JWT_SECRET_KEY) {
                 decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET_KEY);
             }
-            if (typeof decoded === 'string') {
+            if (typeof decoded === "string") {
                 res.status(400);
                 throw new Error("Not Authorized..Failed!!!");
             }

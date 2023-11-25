@@ -28,52 +28,55 @@ const mongoose_1 = __importStar(require("mongoose"));
 const taskSchema = new mongoose_1.Schema({
     name: {
         type: String,
-        required: true
+        required: true,
     },
     description: {
         type: String,
-        required: true
+        required: true,
     },
     deadline: {
         type: Date,
-        required: true
+        required: true,
     },
     labels: [
         {
             type: String,
-            required: true
-        }
+            required: true,
+        },
     ],
     assignee: {
         type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: "User",
     },
     status: {
         type: String,
-        enum: ["pending", "approved"]
+        enum: ["pending", "approved"],
     },
     submission: {
-        description: {
-            type: String,
-            required: true
+        type: {
+            description: {
+                type: String,
+                required: true,
+            },
+            proof: {
+                type: String,
+                required: true,
+            },
+            submittedAt: {
+                type: Date,
+            },
+            reviewdBy: [
+                {
+                    type: mongoose_1.Schema.Types.ObjectId,
+                    ref: "User",
+                },
+            ],
+            approvalStatus: {
+                type: String,
+                enum: ["pending", "approved"],
+            },
         },
-        proof: {
-            type: String,
-            required: true
-        },
-        submittedAt: {
-            type: Date
-        },
-        reviewdBy: [
-            {
-                type: mongoose_1.Schema.Types.ObjectId,
-                ref: "User"
-            }
-        ],
-        approvalStatus: {
-            type: String,
-            enum: ["pending", "approved"]
-        }
-    }
+        default: undefined,
+    },
 });
 exports.Task = mongoose_1.default.model("Task", taskSchema);

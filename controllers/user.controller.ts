@@ -5,7 +5,7 @@ import generateToken from "../config/generateToken";
 
 export const registerUser = asyncHandler(
   async (req: Request, res: Response) => {
-    const { name, email, password, role,phoneNum } = req.body;
+    const { name, email, password, role, phoneNum } = req.body;
     if (!name || !email || !password || !role || !phoneNum) {
       res.status(400);
       throw new Error("Please Enter all the fields");
@@ -21,7 +21,7 @@ export const registerUser = asyncHandler(
       email,
       password,
       role,
-      phoneNum
+      phoneNum,
     });
     if (user) {
       res.status(201).json({
@@ -29,7 +29,7 @@ export const registerUser = asyncHandler(
         name: user.name,
         email: user.email,
         role: user.role,
-        phoneNum:user.phoneNum,
+        phoneNum: user.phoneNum,
         token: generateToken(user._id),
       });
     } else {
@@ -42,7 +42,7 @@ export const registerUser = asyncHandler(
 export const authUser = asyncHandler(async (req: Request, res: Response) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    res.status(400);
+    res.status(404);
     throw new Error("Email or password are missing.");
   }
 
@@ -56,7 +56,7 @@ export const authUser = asyncHandler(async (req: Request, res: Response) => {
       token: generateToken(user._id),
     });
   } else {
-    res.status(400);
+    res.status(404);
     throw new Error("Invalid Credentials");
   }
 });

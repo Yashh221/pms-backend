@@ -32,7 +32,7 @@ exports.registerUser = (0, express_async_handler_1.default)((req, res) => __awai
         email,
         password,
         role,
-        phoneNum
+        phoneNum,
     });
     if (user) {
         res.status(201).json({
@@ -52,7 +52,7 @@ exports.registerUser = (0, express_async_handler_1.default)((req, res) => __awai
 exports.authUser = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     if (!email || !password) {
-        res.status(400);
+        res.status(404);
         throw new Error("Email or password are missing.");
     }
     const user = yield user_model_1.User.findOne({ email });
@@ -65,7 +65,7 @@ exports.authUser = (0, express_async_handler_1.default)((req, res) => __awaiter(
         });
     }
     else {
-        res.status(400);
+        res.status(404);
         throw new Error("Invalid Credentials");
     }
 }));
