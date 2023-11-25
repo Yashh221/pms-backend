@@ -1,16 +1,17 @@
-import express, {Express } from "express";
-import dotenv from 'dotenv'
-import * as path from 'path';
+import express, { Express } from "express";
+import dotenv from "dotenv";
+import * as path from "path";
 import connectDB from "./config/database";
 import authRouter from "./routes/authRoutes";
-dotenv.config({path:path.resolve(__dirname, '../.env') })
-const app : Express = express()
+import maintainerRouter from "./routes/maintainerRoutes";
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
+const app: Express = express();
 
 connectDB();
-const PORT = process.env.PORT || '6000';
-app.listen(PORT, () =>{
-    console.log(`Connected to Port ${PORT}`)
-})
+const PORT = process.env.PORT || "6000";
+app.listen(PORT, () => {
+  console.log(`Connected to Port ${PORT}`);
+});
 app.use(express.json());
-app.use('/auth/',authRouter)
-
+app.use("/auth", authRouter);
+app.use("/maintainer/tasks", maintainerRouter);

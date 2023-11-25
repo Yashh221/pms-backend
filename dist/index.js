@@ -31,12 +31,14 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const path = __importStar(require("path"));
 const database_1 = __importDefault(require("./config/database"));
 const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
-dotenv_1.default.config({ path: path.resolve(__dirname, '../.env') });
+const maintainerRoutes_1 = __importDefault(require("./routes/maintainerRoutes"));
+dotenv_1.default.config({ path: path.resolve(__dirname, "../.env") });
 const app = (0, express_1.default)();
 (0, database_1.default)();
-const PORT = process.env.PORT || '6000';
+const PORT = process.env.PORT || "6000";
 app.listen(PORT, () => {
     console.log(`Connected to Port ${PORT}`);
 });
 app.use(express_1.default.json());
-app.use('/auth/', authRoutes_1.default);
+app.use("/auth", authRoutes_1.default);
+app.use("/maintainer/tasks", maintainerRoutes_1.default);
