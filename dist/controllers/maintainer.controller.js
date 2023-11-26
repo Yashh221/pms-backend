@@ -12,9 +12,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSubmissions = exports.approveTaskStatus = exports.assignWork = exports.approvedTask = exports.pendingTask = exports.searchTask = exports.deleteTask = exports.getAllTasks = exports.createTask = void 0;
+exports.getMaintainerProjects = exports.removeUserFromProject = exports.addUserToProject = exports.getSubmissions = exports.approveTaskStatus = exports.assignWork = exports.approvedTask = exports.pendingTask = exports.searchTask = exports.deleteTask = exports.getAllTasks = exports.createTask = void 0;
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const tasks_model_1 = require("../models/tasks.model");
+const project_model_1 = require("../models/project.model");
 ///////////---------------------------- MAINTAINER TASK API'S --------------------------------------//////////
 exports.createTask = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -169,6 +170,56 @@ exports.getSubmissions = (0, express_async_handler_1.default)((req, res) => __aw
             },
         }).populate("assignee", "-password");
         res.status(200).json({ message: "success", tasks });
+    }
+    catch (error) {
+        res.status(500).json({ message: error });
+    }
+}));
+//////////////////////--------------------------------MAINTAINER USER API'S ---------------------------------///////////////
+exports.addUserToProject = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId, projectId } = req.body;
+    if (!userId || !projectId) {
+        res.status(400).json({ message: "No user or project found!" });
+        return;
+    }
+    const user = yield project_model_1.Project.findByIdAndUpdate(projectId, {
+        $push: { members: userId },
+    }, {
+        new: true,
+    }).populate("owners maintainers members", "-password");
+    res.status(200).json({ message: "success", data: user });
+}));
+exports.removeUserFromProject = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId, projectId } = req.body;
+    if (!userId || !projectId) {
+        res.status(400).json({ message: "No user or project found!" });
+        return;
+    }
+    const user = yield project_model_1.Project.findByIdAndUpdate(projectId, {
+        $pull: { members: userId },
+    }, {
+        new: true,
+    }).populate("owners maintainers members", "-password");
+    res.status(200).json({ message: "success", data: user });
+}));
+///////// ----------------------------  MAINTAINER PERSONAL API'S  -----------------------//////////////////
+exports.getMaintainerProjects = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { userId } = req.params;
+        if (!userId) {
+            res.status(400).json({ message: "No parameter found!" });
+            return;
+        }
+        let projects = yield project_model_1.Project.find({
+            maintainers: userId,
+        })
+            .populate("owners maintainers members", "-password")
+            .exec();
+        if (projects.length === 0) {
+            res.status(400).json({ message: "No maintainer found!" });
+            return;
+        }
+        res.status(200).json({ message: "success", data: projects });
     }
     catch (error) {
         res.status(500).json({ message: error });

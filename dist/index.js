@@ -32,6 +32,7 @@ const path = __importStar(require("path"));
 const database_1 = __importDefault(require("./config/database"));
 const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 const maintainerRoutes_1 = __importDefault(require("./routes/maintainerRoutes"));
+const ownerRoutes_1 = __importDefault(require("./routes/ownerRoutes"));
 dotenv_1.default.config({ path: path.resolve(__dirname, "../.env") });
 const app = (0, express_1.default)();
 (0, database_1.default)();
@@ -41,4 +42,5 @@ app.listen(PORT, () => {
 });
 app.use(express_1.default.json());
 app.use("/auth", authRoutes_1.default);
-app.use("/maintainer/tasks", maintainerRoutes_1.default);
+app.use("/maintainer", maintainerRoutes_1.default);
+app.use("/owner", ownerRoutes_1.default);
