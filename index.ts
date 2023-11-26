@@ -4,6 +4,7 @@ import * as path from "path";
 import connectDB from "./config/database";
 import authRouter from "./routes/authRoutes";
 import maintainerRouter from "./routes/maintainerRoutes";
+import ownerRouter from "./routes/ownerRoutes";
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 const app: Express = express();
 
@@ -14,4 +15,5 @@ app.listen(PORT, () => {
 });
 app.use(express.json());
 app.use("/auth", authRouter);
-app.use("/maintainer/tasks", maintainerRouter);
+app.use("/maintainer", maintainerRouter);
+app.use("/owner", ownerRouter);

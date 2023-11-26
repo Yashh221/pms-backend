@@ -1,6 +1,8 @@
 import { Request, RequestHandler, Response } from "express";
 import asyncHandler from "express-async-handler";
 import { Task } from "../models/tasks.model";
+import { Project } from "../models/project.model";
+import { populate } from "dotenv";
 
 ///////////---------------------------- MAINTAINER TASK API'S --------------------------------------//////////
 
@@ -192,6 +194,76 @@ export const getSubmissions: RequestHandler = asyncHandler(
         },
       }).populate("assignee", "-password");
       res.status(200).json({ message: "success", tasks });
+    } catch (error) {
+      res.status(500).json({ message: error });
+    }
+  }
+);
+
+//////////////////////--------------------------------MAINTAINER USER API'S ---------------------------------///////////////
+
+export const addUserToProject = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { userId, projectId } = req.body;
+    if (!userId || !projectId) {
+      res.status(400).json({ message: "No user or project found!" });
+      return;
+    }
+
+    const user = await Project.findByIdAndUpdate(
+      projectId,
+      {
+        $push: { members: userId },
+      },
+      {
+        new: true,
+      }
+    ).populate("owners maintainers members", "-password");
+    res.status(200).json({ message: "success", data: user });
+  }
+);
+
+export const removeUserFromProject = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { userId, projectId } = req.body;
+    if (!userId || !projectId) {
+      res.status(400).json({ message: "No user or project found!" });
+      return;
+    }
+
+    const user = await Project.findByIdAndUpdate(
+      projectId,
+      {
+        $pull: { members: userId },
+      },
+      {
+        new: true,
+      }
+    ).populate("owners maintainers members", "-password");
+    res.status(200).json({ message: "success", data: user });
+  }
+);
+
+///////// ----------------------------  MAINTAINER PERSONAL API'S  -----------------------//////////////////
+
+export const getMaintainerProjects = asyncHandler(
+  async (req: Request, res: Response) => {
+    try {
+      const { userId } = req.params;
+      if (!userId) {
+        res.status(400).json({ message: "No parameter found!" });
+        return;
+      }
+      let projects = await Project.find({
+        maintainers: userId,
+      })
+        .populate("owners maintainers members", "-password")
+        .exec();
+      if (projects.length === 0) {
+        res.status(400).json({ message: "No maintainer found!" });
+        return;
+      }
+      res.status(200).json({ message: "success", data: projects });
     } catch (error) {
       res.status(500).json({ message: error });
     }
