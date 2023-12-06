@@ -8,6 +8,7 @@ const user_controller_1 = require("../controllers/user.controller");
 const passport_1 = __importDefault(require("passport"));
 require("../config/passport");
 require("../config/github-passport");
+const auth_middleware_1 = require("../middlewares/auth.middleware");
 const authRouter = (0, express_1.Router)();
 authRouter.post("/register", user_controller_1.registerUser);
 authRouter.post("/login", user_controller_1.authUser);
@@ -15,4 +16,5 @@ authRouter.get("/google", passport_1.default.authenticate("google", { scope: ["e
 authRouter.get("/google/callback", passport_1.default.authenticate("google", { failureRedirect: "/login" }), user_controller_1.googleCallback);
 authRouter.get("/github", passport_1.default.authenticate("github", { scope: ["user:email"] }));
 authRouter.get("/github/callback", passport_1.default.authenticate("github", { failureRedirect: "/login" }), user_controller_1.githubCallback);
+authRouter.post("/selectRole", auth_middleware_1.protect, user_controller_1.selectRole);
 exports.default = authRouter;
