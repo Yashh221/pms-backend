@@ -140,7 +140,7 @@ export const getOwnerProjects = asyncHandler(
         .populate("owners maintainers members", "-password")
         .exec();
       if (projects.length === 0) {
-        res.status(400).json({ message: "No maintainer found!" });
+        res.status(400).json({ message: "No Owner found!" });
         return;
       }
       res.status(200).json({ message: "success", data: projects });

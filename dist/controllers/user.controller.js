@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authUser = exports.registerUser = void 0;
+exports.githubCallback = exports.googleCallback = exports.authUser = exports.registerUser = void 0;
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const user_model_1 = require("../models/user.model");
 const generateToken_1 = __importDefault(require("../config/generateToken"));
@@ -68,4 +68,12 @@ exports.authUser = (0, express_async_handler_1.default)((req, res) => __awaiter(
         res.status(404);
         throw new Error("Invalid Credentials");
     }
+}));
+//google auth
+exports.googleCallback = (0, express_async_handler_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    res.send(req.user);
+}));
+//github auth
+exports.githubCallback = (0, express_async_handler_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    res.send(req.user);
 }));
