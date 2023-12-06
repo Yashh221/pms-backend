@@ -1,5 +1,5 @@
 import asyncHandler from "express-async-handler";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { User } from "../models/user.model";
 import generateToken from "../config/generateToken";
 
@@ -60,3 +60,17 @@ export const authUser = asyncHandler(async (req: Request, res: Response) => {
     throw new Error("Invalid Credentials");
   }
 });
+
+//google auth
+
+export const googleCallback = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    res.send(req.user);
+  }
+);
+//github auth
+export const githubCallback = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    res.send(req.user);
+  }
+);

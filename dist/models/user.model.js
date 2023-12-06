@@ -41,28 +41,34 @@ const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const userSchema = new mongoose_1.Schema({
     name: {
         type: String,
-        required: true
+        // required: true,
     },
     email: {
         type: String,
-        required: true
+        // required: true,
     },
     password: {
         type: String,
-        required: true
     },
     phoneNum: {
-        type: String
+        type: String,
     },
     role: {
         type: String,
-        required: true,
-        enum: ["owner", "maintainer", "member"]
-    }
+        enum: ["owner", "maintainer", "member"],
+    },
+    googleId: {
+        type: String,
+        unique: true,
+    },
+    githubId: {
+        type: String,
+        unique: true,
+    },
 });
 userSchema.methods.getHashedPassword = function (next) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (!this.isModified('password'))
+        if (!this.isModified("password"))
             return next();
         try {
             const salt = yield bcryptjs_1.default.genSalt(10);
@@ -74,10 +80,10 @@ userSchema.methods.getHashedPassword = function (next) {
         }
     });
 };
-userSchema.pre('save', userSchema.methods.getHashedPassword);
+userSchema.pre("save", userSchema.methods.getHashedPassword);
 userSchema.methods.isValidatePassword = function (password) {
     return __awaiter(this, void 0, void 0, function* () {
         return yield bcryptjs_1.default.compare(password, this.password);
     });
 };
-exports.User = mongoose_1.default.model('User', userSchema);
+exports.User = mongoose_1.default.model("User", userSchema);
