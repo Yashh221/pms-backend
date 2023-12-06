@@ -74,3 +74,37 @@ export const githubCallback = asyncHandler(
     res.send(req.user);
   }
 );
+
+// select role
+
+export const selectRole = asyncHandler(async (req: Request, res: Response) => {
+  try {
+    const { userId, role } = req.body;
+    if (!userId || !role) {
+      res
+        .status(400)
+        .json({ message: "Please select role for the valid user" });
+      return;
+    }
+    const user = await User.findByIdAndUpdate(
+      userId,
+      {
+        role,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+    if (user) {
+      res.status(200).json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});

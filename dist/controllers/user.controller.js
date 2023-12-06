@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.githubCallback = exports.googleCallback = exports.authUser = exports.registerUser = void 0;
+exports.selectRole = exports.githubCallback = exports.googleCallback = exports.authUser = exports.registerUser = void 0;
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const user_model_1 = require("../models/user.model");
 const generateToken_1 = __importDefault(require("../config/generateToken"));
@@ -76,4 +76,33 @@ exports.googleCallback = (0, express_async_handler_1.default)((req, res, next) =
 //github auth
 exports.githubCallback = (0, express_async_handler_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     res.send(req.user);
+}));
+// select role
+exports.selectRole = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { userId, role } = req.body;
+        if (!userId || !role) {
+            res
+                .status(400)
+                .json({ message: "Please select role for the valid user" });
+            return;
+        }
+        const user = yield user_model_1.User.findByIdAndUpdate(userId, {
+            role,
+        }, {
+            new: true,
+            runValidators: true,
+        });
+        if (user) {
+            res.status(200).json({
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+            });
+        }
+    }
+    catch (error) {
+        res.status(500).json({ message: "Internal Server Error" });
+    }
 }));

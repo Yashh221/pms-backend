@@ -4,10 +4,12 @@ import {
   githubCallback,
   googleCallback,
   registerUser,
+  selectRole,
 } from "../controllers/user.controller";
 import passport from "passport";
 import "../config/passport";
 import "../config/github-passport";
+import { protect } from "../middlewares/auth.middleware";
 
 const authRouter = Router();
 authRouter.post("/register", registerUser);
@@ -33,5 +35,7 @@ authRouter.get(
   passport.authenticate("github", { failureRedirect: "/login" }),
   githubCallback
 );
+
+authRouter.post("/selectRole", protect, selectRole);
 
 export default authRouter;
