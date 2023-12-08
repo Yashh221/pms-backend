@@ -18,14 +18,14 @@ const user_model_1 = require("../models/user.model");
 const generateToken_1 = __importDefault(require("../config/generateToken"));
 exports.registerUser = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, email, password, role, phoneNum } = req.body;
-    if (!name || !email || !password || !role || !phoneNum) {
-        res.status(400);
-        throw new Error("Please Enter all the fields");
+    console.log(req.body);
+    if (!name || !email || !password) {
+        res.status(400).json({ message: "Please Enter all the fields" });
+        return;
     }
     const userExists = yield user_model_1.User.findOne({ email });
     if (userExists) {
-        res.status(400);
-        throw new Error("User already registered");
+        res.status(400).json({ message: "User already registered" });
     }
     const user = yield user_model_1.User.create({
         name,
@@ -36,6 +36,7 @@ exports.registerUser = (0, express_async_handler_1.default)((req, res) => __awai
     });
     if (user) {
         res.status(201).json({
+            success: true,
             _id: user._id,
             name: user.name,
             email: user.email,
@@ -45,19 +46,19 @@ exports.registerUser = (0, express_async_handler_1.default)((req, res) => __awai
         });
     }
     else {
-        res.status(400);
-        throw new Error("Failed to register the user");
+        res.status(400).json({ message: "Failed to register the user" });
     }
 }));
 exports.authUser = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     if (!email || !password) {
-        res.status(404);
-        throw new Error("Email or password are missing.");
+        res.status(404).json({ message: "Email or password are missing." });
+        return;
     }
     const user = yield user_model_1.User.findOne({ email });
     if (user && (yield user.isValidatePassword(password))) {
         res.status(200).json({
+            success: true,
             _id: user._id,
             name: user.name,
             email: user.email,
@@ -65,8 +66,7 @@ exports.authUser = (0, express_async_handler_1.default)((req, res) => __awaiter(
         });
     }
     else {
-        res.status(404);
-        throw new Error("Invalid Credentials");
+        res.status(404).json({ message: "Invalid Credentials" });
     }
 }));
 //google auth

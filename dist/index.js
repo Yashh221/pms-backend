@@ -35,6 +35,7 @@ const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 const maintainerRoutes_1 = __importDefault(require("./routes/maintainerRoutes"));
 const ownerRoutes_1 = __importDefault(require("./routes/ownerRoutes"));
 const passport_1 = __importDefault(require("passport"));
+const cors_1 = __importDefault(require("cors"));
 dotenv_1.default.config({ path: path.resolve(__dirname, "../.env") });
 const app = (0, express_1.default)();
 (0, database_1.default)();
@@ -43,6 +44,7 @@ const secret = process.env.SESSION_SECRET || "";
 app.listen(PORT, () => {
     console.log(`Connected to Port ${PORT}`);
 });
+app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use((0, express_session_1.default)({
     secret: secret,

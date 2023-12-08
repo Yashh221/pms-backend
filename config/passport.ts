@@ -9,7 +9,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-      callbackURL: `http://localhost:7000/auth/google/callback`,
+      callbackURL: `http://localhost:5173/auth/google/callback`,
     },
     (accessToken, refreshToken, profile, next) => {
       User.findOne({ email: profile._json.email }).then((user) => {

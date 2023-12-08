@@ -7,6 +7,7 @@ import authRouter from "./routes/authRoutes";
 import maintainerRouter from "./routes/maintainerRoutes";
 import ownerRouter from "./routes/ownerRoutes";
 import passport from "passport";
+import cors from "cors";
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 const app: Express = express();
 
@@ -16,6 +17,7 @@ const secret = process.env.SESSION_SECRET || "";
 app.listen(PORT, () => {
   console.log(`Connected to Port ${PORT}`);
 });
+app.use(cors());
 app.use(express.json());
 app.use(
   session({
