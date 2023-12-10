@@ -10,28 +10,31 @@ passport.use(
       clientID: process.env.GITHUB_CLIENT_ID || "",
       clientSecret: process.env.GITHUB_CLIENT_SECRET || "",
       callbackURL: "http://localhost:7000/auth/github/callback",
+      passReqToCallback: true,
     },
-    (accessToken, refreshToken, profile, next) => {
+    async (
+      req: any,
+      accessToken: string,
+      refreshToken: string,
+      profile: any,
+      next: any
+    ) => {
       console.log(profile);
-      User.findOne({ email: profile._json.email }).then((user) => {
-        if (user) {
-          console.log("User already exists in Database");
-          next(null, user);
-          // cookieToken()
-        } else {
-          User.create({
-            githubId: profile._json.id,
-            name: profile._json.name,
-          })
-            .then((user) => {
-              console.log("New User ", user);
-              next(null, user);
-            })
-            .catch((err) => {
-              console.log(err);
-            });
+      const defaultUser = {
+        name: `${profile._json.name}`,
+        email: profile._json.email ? profile._json.email : "",
+        githubId: profile._json.id,
+      };
+      try {
+        let user = await User.findOne({ githubId: profile.id });
+        if (!user) {
+          user = await User.create(defaultUser);
         }
-      });
+        if (user) return next(null, user);
+      } catch (error: any) {
+        console.log("Error signing up:", error);
+        next(error, undefined);
+      }
     }
   )
 );
